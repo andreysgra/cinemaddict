@@ -32,7 +32,7 @@ export default class FilmsPresenter {
     render(this.#filmsListContainerComponent, this.#filmsListComponent.element);
 
     for (let i = 0; i < FILMS_COUNT_PER_STEP; i++) {
-      render(new FilmCardView(), this.#filmsListContainerComponent.element);
+      render(new FilmCardView(this.#films[i]), this.#filmsListContainerComponent.element);
     }
 
     render(this.#showMoreButtonComponent, this.#filmsListComponent.element);
