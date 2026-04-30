@@ -3,11 +3,12 @@ import {remove, render} from '../framework/render';
 import FilmsView from '../view/films-view';
 import FilmsListView from '../view/films-list-view';
 import FilmsListContainerView from '../view/films-list-container-view';
-import {FILMS_COUNT_PER_STEP} from '../const';
+import {FILMS_COUNT_PER_STEP, FilterType} from '../const';
 import FilmCardView from '../view/film-card-view';
 import ShowMoreButtonView from '../view/show-more-button-view';
 import FilmDetailsView from '../view/film-details-view';
 import {addEscapeEvent} from '../utils/common';
+import FilmsListEmptyView from '../view/films-list-empty-view';
 
 export default class FilmsPresenter {
   #container = null;
@@ -84,6 +85,12 @@ export default class FilmsPresenter {
   #renderFilmsBoard = () => {
     render(this.#sortComponent, this.#container);
     render(this.#filmsComponent, this.#container);
+
+    if (this.#films.length === 0) {
+      render(new FilmsListEmptyView(FilterType.ALL), this.#filmsComponent.element);
+
+      return;
+    }
 
     render(this.#filmsListComponent, this.#filmsComponent.element);
     render(this.#filmsListContainerComponent, this.#filmsListComponent.element);
