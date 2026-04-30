@@ -55,7 +55,7 @@ export default class FilmsPresenter {
       .querySelector('.film-details__close-btn')
       .addEventListener('click', this.#removeFilmDetailsComponent);
 
-    document.body.addEventListener('keydown', this.#onEscKeyDown);
+    document.addEventListener('keydown', this.#onEscKeyDown);
   };
 
   #removeFilmDetailsComponent = () => {
