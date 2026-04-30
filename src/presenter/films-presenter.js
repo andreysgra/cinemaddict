@@ -3,11 +3,12 @@ import {remove, render} from '../framework/render';
 import FilmsView from '../view/films-view';
 import FilmsListView from '../view/films-list-view';
 import FilmsListContainerView from '../view/films-list-container-view';
-import {FILMS_COUNT_PER_STEP} from '../const';
+import {FILMS_COUNT_PER_STEP, FilterType} from '../const';
 import FilmCardView from '../view/film-card-view';
 import ShowMoreButtonView from '../view/show-more-button-view';
 import FilmDetailsView from '../view/film-details-view';
 import {addEscapeEvent} from '../utils/common';
+import FilmsListEmptyView from '../view/films-list-empty-view';
 
 export default class FilmsPresenter {
   #container = null;
@@ -17,6 +18,8 @@ export default class FilmsPresenter {
 
   #films = [];
   #comments = [];
+
+  #renderedFilmsCount = FILMS_COUNT_PER_STEP;
 
   #sortComponent = new SortView();
   #filmsComponent = new FilmsView();
@@ -34,16 +37,7 @@ export default class FilmsPresenter {
   init() {
     this.#films = [...this.#filmsModel.films];
 
-    render(this.#sortComponent, this.#container);
-    render(this.#filmsComponent, this.#container);
-    render(this.#filmsListComponent, this.#filmsComponent.element);
-    render(this.#filmsListContainerComponent, this.#filmsListComponent.element);
-
-    for (let i = 0; i < FILMS_COUNT_PER_STEP; i++) {
-      this.#renderFilm(this.#films[i]);
-    }
-
-    render(this.#showMoreButtonComponent, this.#filmsListComponent.element);
+    this.#renderFilmsBoard();
   }
 
   #addFilmDetailsComponent = (film) => {
@@ -88,5 +82,43 @@ export default class FilmsPresenter {
     render(this.#filmDetailsComponent, this.#container.parentElement);
   }
 
+  #renderFilmsBoard = () => {
+    render(this.#sortComponent, this.#container);
+    render(this.#filmsComponent, this.#container);
+
+    if (this.#films.length === 0) {
+      render(new FilmsListEmptyView(FilterType.ALL), this.#filmsComponent.element);
+
+      return;
+    }
+
+    render(this.#filmsListComponent, this.#filmsComponent.element);
+    render(this.#filmsListContainerComponent, this.#filmsListComponent.element);
+
+    this.#films
+      .slice(0, Math.min(this.#films.length, FILMS_COUNT_PER_STEP))
+      .forEach((film) => this.#renderFilm(film));
+
+    if (this.#films.length > FILMS_COUNT_PER_STEP) {
+      render(this.#showMoreButtonComponent, this.#filmsListComponent.element);
+
+      this.#showMoreButtonComponent.element.addEventListener('click', this.#onShowMoreButtonClick);
+    }
+  };
+
   #onEscKeyDown = (evt) => addEscapeEvent(evt, this.#removeFilmDetailsComponent);
+
+  #onShowMoreButtonClick = (evt) => {
+    evt.preventDefault();
+
+    this.#films
+      .slice(this.#renderedFilmsCount, this.#renderedFilmsCount + FILMS_COUNT_PER_STEP)
+      .forEach((film) => this.#renderFilm(film));
+
+    this.#renderedFilmsCount += FILMS_COUNT_PER_STEP;
+
+    if (this.#renderedFilmsCount >= this.#films.length) {
+      remove(this.#showMoreButtonComponent);
+    }
+  };
 }
