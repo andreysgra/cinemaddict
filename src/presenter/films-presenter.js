@@ -17,7 +17,6 @@ export default class FilmsPresenter {
   #commentsModel = null;
 
   #films = [];
-  #comments = [];
 
   #renderedFilmsCount = FILMS_COUNT_PER_STEP;
 
@@ -25,7 +24,7 @@ export default class FilmsPresenter {
   #filmsComponent = new FilmsView();
   #filmsListComponent = new FilmsListView();
   #filmsListContainerComponent = new FilmsListContainerView();
-  #showMoreButtonComponent = new ShowMoreButtonView();
+  #showMoreButtonComponent = null;
   #filmDetailsComponent = null;
 
   constructor(container, filmsModel, commentsModel) {
@@ -44,11 +43,6 @@ export default class FilmsPresenter {
     this.#renderFilmDetails(film);
 
     document.body.classList.add('hide-overflow');
-
-    this.#filmDetailsComponent.element
-      .querySelector('.film-details__close-btn')
-      .addEventListener('click', this.#removeFilmDetailsComponent);
-
     document.addEventListener('keydown', this.#onEscKeyDown);
   };
 
@@ -56,28 +50,21 @@ export default class FilmsPresenter {
     remove(this.#filmDetailsComponent);
 
     document.body.classList.remove('hide-overflow');
-
     document.removeEventListener('keydown', this.#onEscKeyDown);
   };
 
   #renderFilm(film) {
-    const filmCardComponent = new FilmCardView(film);
-
-    const showFilmDetailsComponent = (evt) => {
-      evt.preventDefault();
-
-      this.#addFilmDetailsComponent(film);
-    };
+    const filmCardComponent = new FilmCardView({film, onCardClick: () =>
+      this.#addFilmDetailsComponent(film)});
 
     render(filmCardComponent, this.#filmsListContainerComponent.element);
-
-    filmCardComponent.element.querySelector('.film-card__link')
-      .addEventListener('click', showFilmDetailsComponent);
   }
 
   #renderFilmDetails(film) {
-    this.#comments = [...this.#commentsModel.getComments(film)];
-    this.#filmDetailsComponent = new FilmDetailsView(film, this.#comments);
+    const comments = [...this.#commentsModel.getComments(film)];
+
+    this.#filmDetailsComponent = new FilmDetailsView({film, comments,
+      onCloseButtonClick: this.#removeFilmDetailsComponent});
 
     render(this.#filmDetailsComponent, this.#container.parentElement);
   }
@@ -100,17 +87,14 @@ export default class FilmsPresenter {
       .forEach((film) => this.#renderFilm(film));
 
     if (this.#films.length > FILMS_COUNT_PER_STEP) {
+      this.#showMoreButtonComponent = new ShowMoreButtonView({onClick: this.#onShowMoreButtonClick});
       render(this.#showMoreButtonComponent, this.#filmsListComponent.element);
-
-      this.#showMoreButtonComponent.element.addEventListener('click', this.#onShowMoreButtonClick);
     }
   };
 
   #onEscKeyDown = (evt) => addEscapeEvent(evt, this.#removeFilmDetailsComponent);
 
-  #onShowMoreButtonClick = (evt) => {
-    evt.preventDefault();
-
+  #onShowMoreButtonClick = () => {
     this.#films
       .slice(this.#renderedFilmsCount, this.#renderedFilmsCount + FILMS_COUNT_PER_STEP)
       .forEach((film) => this.#renderFilm(film));
