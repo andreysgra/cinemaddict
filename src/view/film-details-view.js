@@ -200,15 +200,25 @@ const createFilmDetailsTemplate = (film, comments) => {
 export default class FilmDetailsView extends AbstractView {
   #film = null;
   #comments = null;
+  #handleCloseButtonClick = null;
 
-  constructor(film, comments) {
+  constructor({film, comments, onCloseButtonClick}) {
     super();
 
     this.#film = film;
     this.#comments = comments;
+    this.#handleCloseButtonClick = onCloseButtonClick;
+
+    this.element.querySelector('.film-details__close-btn')
+      .addEventListener('click', this.#closeButtonClickHandler);
   }
 
   get template() {
     return createFilmDetailsTemplate(this.#film, this.#comments);
   }
+
+  #closeButtonClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleCloseButtonClick();
+  };
 }
