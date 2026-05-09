@@ -1,13 +1,11 @@
-import {render} from './framework/render';
-import FiltersView from './view/filters-view';
 import FilmsPresenter from './presenter/films-presenter';
 import FilmsModel from './model/films-model';
 import {films} from './mocks/films';
 import {comments} from './mocks/comments';
 import CommentsModel from './model/comments-model';
-import {generateFilters} from './mocks/filter';
 import FooterStatisticsPresenter from './presenter/footer-statistics-presenter';
 import UserProfilePresenter from './presenter/user-profile-presenter';
+import FilterPresenter from './presenter/filter-presenter';
 
 const bodyElement = document.body;
 const siteHeaderElement = bodyElement.querySelector('.header');
@@ -17,14 +15,12 @@ const siteFooterStatisticsElement = bodyElement.querySelector('.footer__statisti
 const filmsModel = new FilmsModel(films);
 const commentsModel = new CommentsModel(comments);
 
-const filters = generateFilters(filmsModel.films);
-
+const filterPresenter = new FilterPresenter(siteMainElement, filmsModel);
 const filmsPresenter = new FilmsPresenter(siteMainElement, filmsModel, commentsModel);
 const userProfilePresenter = new UserProfilePresenter(siteHeaderElement, filmsModel);
 const footerStatisticPresenter = new FooterStatisticsPresenter(siteFooterStatisticsElement, filmsModel);
 
-render(new FiltersView(filters), siteMainElement);
-
+filterPresenter.init();
 filmsPresenter.init();
 userProfilePresenter.init();
 footerStatisticPresenter.init();
