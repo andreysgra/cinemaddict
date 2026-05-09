@@ -1,5 +1,4 @@
 import {render} from './framework/render';
-import UserProfileView from './view/user-profile-view';
 import FiltersView from './view/filters-view';
 import FilmsPresenter from './presenter/films-presenter';
 import FilmsModel from './model/films-model';
@@ -8,6 +7,7 @@ import {comments} from './mocks/comments';
 import CommentsModel from './model/comments-model';
 import {generateFilters} from './mocks/filter';
 import FooterStatisticsPresenter from './presenter/footer-statistics-presenter';
+import UserProfilePresenter from './presenter/user-profile-presenter';
 
 const bodyElement = document.body;
 const siteHeaderElement = bodyElement.querySelector('.header');
@@ -19,13 +19,12 @@ const commentsModel = new CommentsModel(comments);
 
 const filters = generateFilters(filmsModel.films);
 
-const userProfileComponent = new UserProfileView();
-
 const filmsPresenter = new FilmsPresenter(siteMainElement, filmsModel, commentsModel);
+const userProfilePresenter = new UserProfilePresenter(siteHeaderElement, filmsModel);
 const footerStatisticPresenter = new FooterStatisticsPresenter(siteFooterStatisticsElement, filmsModel);
 
-render(userProfileComponent, siteHeaderElement);
 render(new FiltersView(filters), siteMainElement);
 
 filmsPresenter.init();
+userProfilePresenter.init();
 footerStatisticPresenter.init();
