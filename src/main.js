@@ -7,6 +7,7 @@ import FilmsModel from './model/films-model';
 import {films} from './mocks/films';
 import {comments} from './mocks/comments';
 import CommentsModel from './model/comments-model';
+import {generateFilters} from './mocks/filter';
 
 const bodyElement = document.body;
 const siteHeaderElement = bodyElement.querySelector('.header');
@@ -16,14 +17,15 @@ const siteFooterStatisticsElement = bodyElement.querySelector('.footer__statisti
 const filmsModel = new FilmsModel(films);
 const commentsModel = new CommentsModel(comments);
 
+const filters = generateFilters(filmsModel.films);
+
 const userProfileComponent = new UserProfileView();
-const filtersComponent = new FiltersView();
 const footerStatisticsComponent = new FooterStatisticsView();
 
 const filmsPresenter = new FilmsPresenter(siteMainElement, filmsModel, commentsModel);
 
 render(userProfileComponent, siteHeaderElement);
-render(filtersComponent, siteMainElement);
+render(new FiltersView(filters), siteMainElement);
 render(footerStatisticsComponent, siteFooterStatisticsElement);
 
 filmsPresenter.init();
