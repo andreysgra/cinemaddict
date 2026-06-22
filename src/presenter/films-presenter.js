@@ -41,10 +41,10 @@ export default class FilmsPresenter {
     render(this.#filmsListContainerComponent, this.#filmsListComponent.element);
 
     for (let i = 0; i < FILMS_COUNT_PER_STEP; i++) {
-      render(new FilmCardView(this.#films[i]), this.#filmsListContainerComponent.element);
+      render(new FilmCardView({film: this.#films[i]}), this.#filmsListContainerComponent.element);
     }
 
-    this.#filmDetailsComponent = new FilmDetailsView(this.#films[0], this.#comments);
+    this.#filmDetailsComponent = new FilmDetailsView({film: this.#films[0], comments: this.#comments});
 
     render(this.#showMoreButtonComponent, this.#filmsListComponent.element);
     render(this.#filmDetailsComponent, this.#container.parentElement);

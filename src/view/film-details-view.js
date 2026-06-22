@@ -205,7 +205,7 @@ export default class FilmDetailsView extends AbstractView {
   #film = null;
   #comments = null;
 
-  constructor(film, comments) {
+  constructor({film, comments}) {
     super();
 
     this.#film = film;

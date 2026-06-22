@@ -68,7 +68,7 @@ const createFilmCardTemplate = (film) => {
 export default class FilmCardView extends AbstractView {
   #film = null;
 
-  constructor(film) {
+  constructor({film}) {
     super();
 
     this.#film = film;
