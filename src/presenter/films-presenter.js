@@ -10,8 +10,11 @@ import FilmDetailsView from '../view/film-details-view';
 
 export default class FilmsPresenter {
   #container = null;
+
   #filmsModel = null;
+
   #films = [];
+
   #sortComponent = new SortView();
   #filmsComponent = new FilmsView();
   #filmsListComponent = new FilmsListView();
@@ -21,18 +24,20 @@ export default class FilmsPresenter {
 
   constructor(container, filmsModel) {
     this.#container = container;
+
     this.#filmsModel = filmsModel;
-    this.#films = [...this.#filmsModel.films];
   }
 
   init() {
+    this.#films = [...this.#filmsModel.films];
+
     render(this.#sortComponent, this.#container);
     render(this.#filmsComponent, this.#container);
     render(this.#filmsListComponent, this.#filmsComponent.element);
     render(this.#filmsListContainerComponent, this.#filmsListComponent.element);
 
     for (let i = 0; i < FILMS_COUNT_PER_STEP; i++) {
-      render(new FilmCardView(), this.#filmsListContainerComponent.element);
+      render(new FilmCardView(this.#films[i]), this.#filmsListContainerComponent.element);
     }
 
     render(this.#showMoreButtonComponent, this.#filmsListComponent.element);
