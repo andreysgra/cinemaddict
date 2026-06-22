@@ -24,7 +24,7 @@ export default class FilmsPresenter {
   #showMoreButtonComponent = new ShowMoreButtonView();
   #filmDetailsComponent = null;
 
-  constructor(container, filmsModel, commentsModel) {
+  constructor({container, filmsModel, commentsModel}) {
     this.#container = container;
 
     this.#filmsModel = filmsModel;

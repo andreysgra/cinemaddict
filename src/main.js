@@ -20,7 +20,11 @@ const userProfileComponent = new UserProfileView();
 const filtersComponent = new FiltersView();
 const footerStatisticsComponent = new FooterStatisticsView();
 
-const filmsPresenter = new FilmsPresenter(siteMainElement, filmsModel, commentsModel);
+const filmsPresenter = new FilmsPresenter({
+  container: siteMainElement,
+  filmsModel,
+  commentsModel
+});
 
 render(userProfileComponent, siteHeaderElement);
 render(filtersComponent, siteMainElement);
