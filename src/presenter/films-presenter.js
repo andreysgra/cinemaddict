@@ -10,6 +10,8 @@ import FilmDetailsView from '../view/film-details-view';
 
 export default class FilmsPresenter {
   #container = null;
+  #filmsModel = null;
+  #films = [];
   #sortComponent = new SortView();
   #filmsComponent = new FilmsView();
   #filmsListComponent = new FilmsListView();
@@ -17,8 +19,10 @@ export default class FilmsPresenter {
   #showMoreButtonComponent = new ShowMoreButtonView();
   #filmDetailsComponent = new FilmDetailsView();
 
-  constructor(container) {
+  constructor(container, filmsModel) {
     this.#container = container;
+    this.#filmsModel = filmsModel;
+    this.#films = [...this.#filmsModel.films];
   }
 
   init() {
