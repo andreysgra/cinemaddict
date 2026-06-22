@@ -12,24 +12,28 @@ export default class FilmsPresenter {
   #container = null;
 
   #filmsModel = null;
+  #commentsModel = null;
 
   #films = [];
+  #comments = [];
 
   #sortComponent = new SortView();
   #filmsComponent = new FilmsView();
   #filmsListComponent = new FilmsListView();
   #filmsListContainerComponent = new FilmsListContainerView();
   #showMoreButtonComponent = new ShowMoreButtonView();
-  #filmDetailsComponent = new FilmDetailsView();
+  #filmDetailsComponent = null;
 
-  constructor(container, filmsModel) {
+  constructor(container, filmsModel, commentsModel) {
     this.#container = container;
 
     this.#filmsModel = filmsModel;
+    this.#commentsModel = commentsModel;
   }
 
   init() {
     this.#films = [...this.#filmsModel.films];
+    this.#comments = [...this.#commentsModel.getComments(this.#films[0])];
 
     render(this.#sortComponent, this.#container);
     render(this.#filmsComponent, this.#container);
@@ -39,6 +43,8 @@ export default class FilmsPresenter {
     for (let i = 0; i < FILMS_COUNT_PER_STEP; i++) {
       render(new FilmCardView(this.#films[i]), this.#filmsListContainerComponent.element);
     }
+
+    this.#filmDetailsComponent = new FilmDetailsView(this.#films[0], this.#comments);
 
     render(this.#showMoreButtonComponent, this.#filmsListComponent.element);
     render(this.#filmDetailsComponent, this.#container.parentElement);
