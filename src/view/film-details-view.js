@@ -92,67 +92,67 @@ const createFilmDetailsTemplate = (film, comments) => {
 
   return `
     <section class="film-details">
-    <div class="film-details__inner">
-      <div class="film-details__top-container">
-        <div class="film-details__close">
-        <button class="film-details__close-btn" type="button">close</button>
-      </div>
-        <div class="film-details__info-wrap">
-        <div class="film-details__poster">
-          <img class="film-details__poster-img" src="${poster}" alt="${title}">
+      <div class="film-details__inner">
+        <div class="film-details__top-container">
+          <div class="film-details__close">
+            <button class="film-details__close-btn" type="button">close</button>
+          </div>
+          <div class="film-details__info-wrap">
+            <div class="film-details__poster">
+              <img class="film-details__poster-img" src="${poster}" alt="${title}">
 
-          <p class="film-details__age">${ageRating}</p>
-        </div>
-
-        <div class="film-details__info">
-          <div class="film-details__info-head">
-            <div class="film-details__title-wrap">
-              <h3 class="film-details__title">${title}</h3>
-              <p class="film-details__title-original">Original: ${alternativeTitle}</p>
+              <p class="film-details__age">${ageRating}</p>
             </div>
 
-            <div class="film-details__rating">
-              <p class="film-details__total-rating">${totalRating}</p>
+            <div class="film-details__info">
+              <div class="film-details__info-head">
+                <div class="film-details__title-wrap">
+                  <h3 class="film-details__title">${title}</h3>
+                  <p class="film-details__title-original">Original: ${alternativeTitle}</p>
+                </div>
+
+                <div class="film-details__rating">
+                  <p class="film-details__total-rating">${totalRating}</p>
+                </div>
+              </div>
+
+              <table class="film-details__table">
+                <tr class="film-details__row">
+                  <td class="film-details__term">Director</td>
+                  <td class="film-details__cell">${director}</td>
+                </tr>
+                <tr class="film-details__row">
+                  <td class="film-details__term">Writers</td>
+                  <td class="film-details__cell">${writersList}</td>
+                </tr>
+                <tr class="film-details__row">
+                  <td class="film-details__term">Actors</td>
+                  <td class="film-details__cell">${actorsList}</td>
+                </tr>
+                <tr class="film-details__row">
+                  <td class="film-details__term">Release Date</td>
+                  <td class="film-details__cell">${releaseDate}</td>
+                </tr>
+                <tr class="film-details__row">
+                  <td class="film-details__term">Duration</td>
+                  <td class="film-details__cell">${filmDuration}</td>
+                </tr>
+                <tr class="film-details__row">
+                  <td class="film-details__term">Country</td>
+                  <td class="film-details__cell">${releaseCountry}</td>
+                </tr>
+                <tr class="film-details__row">
+                  <td class="film-details__term">${genreTitle}</td>
+                  <td class="film-details__cell">${genresList}</td>
+                </tr>
+              </table>
+
+              <p class="film-details__film-description">${description}</p>
             </div>
           </div>
 
-          <table class="film-details__table">
-            <tr class="film-details__row">
-              <td class="film-details__term">Director</td>
-              <td class="film-details__cell">${director}</td>
-            </tr>
-            <tr class="film-details__row">
-              <td class="film-details__term">Writers</td>
-              <td class="film-details__cell">${writersList}</td>
-            </tr>
-            <tr class="film-details__row">
-              <td class="film-details__term">Actors</td>
-              <td class="film-details__cell">${actorsList}</td>
-            </tr>
-            <tr class="film-details__row">
-              <td class="film-details__term">Release Date</td>
-              <td class="film-details__cell">${releaseDate}</td>
-            </tr>
-            <tr class="film-details__row">
-              <td class="film-details__term">Duration</td>
-              <td class="film-details__cell">${filmDuration}</td>
-            </tr>
-            <tr class="film-details__row">
-              <td class="film-details__term">Country</td>
-              <td class="film-details__cell">${releaseCountry}</td>
-            </tr>
-            <tr class="film-details__row">
-              <td class="film-details__term">${genreTitle}</td>
-              <td class="film-details__cell">${genresList}</td>
-            </tr>
-          </table>
-
-          <p class="film-details__film-description">${description}</p>
-        </div>
-      </div>
-
-        <section class="film-details__controls">
-          <button
+          <section class="film-details__controls">
+            <button
               type="button"
               class="${classNames('film-details__control-button film-details__control-button--watchlist', {'film-details__control-button--active': watchlist})}"
               id="watchlist"
@@ -173,46 +173,58 @@ const createFilmDetailsTemplate = (film, comments) => {
               name="favorite">
               Add to favorites
             </button>
-        </section>
+          </section>
+        </div>
+
+        <div class="film-details__bottom-container">
+          <section class="film-details__comments-wrap">
+            <h3 class="film-details__comments-title">
+              Comments <span class="film-details__comments-count">${comments.length}</span>
+            </h3>
+
+            ${createFilmCommentsTemplate(comments)}
+
+            <form class="film-details__new-comment" action="" method="get">
+              <div class="film-details__add-emoji-label"></div>
+
+              <label class="film-details__comment-label">
+                <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
+              </label>
+
+              <div class="film-details__emoji-list">
+                ${createEmotionList(EMOTIONS)}
+              </div>
+            </form>
+          </section>
+        </div>
       </div>
-
-      <div class="film-details__bottom-container">
-      <section class="film-details__comments-wrap">
-        <h3 class="film-details__comments-title">
-          Comments <span class="film-details__comments-count">${comments.length}</span>
-        </h3>
-
-        ${createFilmCommentsTemplate(comments)}
-
-        <form class="film-details__new-comment" action="" method="get">
-          <div class="film-details__add-emoji-label"></div>
-
-          <label class="film-details__comment-label">
-            <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
-          </label>
-
-          <div class="film-details__emoji-list">
-            ${createEmotionList(EMOTIONS)}
-          </div>
-        </form>
-      </section>
-    </div>
-    </div>
-   </section>`;
+    </section>`;
 };
 
 export default class FilmDetailsView extends AbstractView {
   #film = null;
   #comments = null;
 
-  constructor({film, comments}) {
+  #handleCloseButtonClick = () => null;
+
+  constructor({film, comments, onCloseButtonClick}) {
     super();
 
     this.#film = film;
     this.#comments = comments;
+
+    this.#handleCloseButtonClick = onCloseButtonClick;
+    this.element.querySelector('.film-details__close-btn')
+      .addEventListener('click', this.#closeButtonClickHandler);
   }
 
   get template() {
     return createFilmDetailsTemplate(this.#film, this.#comments);
   }
+
+  #closeButtonClickHandler = (evt) => {
+    evt.preventDefault();
+
+    this.#handleCloseButtonClick();
+  };
 }
