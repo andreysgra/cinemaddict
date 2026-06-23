@@ -18,6 +18,8 @@ export default class FilmsPresenter {
   #films = [];
   #comments = [];
 
+  #renderedFilmsCount = FILMS_COUNT_PER_STEP;
+
   #sortComponent = new SortView();
   #filmsComponent = new FilmsView();
   #filmsListComponent = new FilmsListView();
@@ -35,16 +37,7 @@ export default class FilmsPresenter {
   init() {
     this.#films = [...this.#filmsModel.films];
 
-    render(this.#sortComponent, this.#container);
-    render(this.#filmsComponent, this.#container);
-    render(this.#filmsListComponent, this.#filmsComponent.element);
-    render(this.#filmsListContainerComponent, this.#filmsListComponent.element);
-
-    for (let i = 0; i < FILMS_COUNT_PER_STEP; i++) {
-      this.#renderFilm(this.#films[i]);
-    }
-
-    render(this.#showMoreButtonComponent, this.#filmsListComponent.element);
+    this.#renderFilmsBoard();
   }
 
   #addFilmDetailsComponent = (film) => {
@@ -89,5 +82,37 @@ export default class FilmsPresenter {
     render(this.#filmDetailsComponent, this.#container.parentElement);
   }
 
+  #renderFilmsBoard = () => {
+    render(this.#sortComponent, this.#container);
+    render(this.#filmsComponent, this.#container);
+
+    render(this.#filmsListComponent, this.#filmsComponent.element);
+    render(this.#filmsListContainerComponent, this.#filmsListComponent.element);
+
+    this.#films
+      .slice(0, Math.min(this.#films.length, FILMS_COUNT_PER_STEP))
+      .forEach((film) => this.#renderFilm(film));
+
+    if (this.#films.length > FILMS_COUNT_PER_STEP) {
+      render(this.#showMoreButtonComponent, this.#filmsListComponent.element);
+
+      this.#showMoreButtonComponent.element.addEventListener('click', this.#onShowMoreButtonClick);
+    }
+  };
+
   #onEscKeyDown = (evt) => addEscapeEvent(evt, this.#removeFilmDetailsComponent);
+
+  #onShowMoreButtonClick = (evt) => {
+    evt.preventDefault();
+
+    this.#films
+      .slice(this.#renderedFilmsCount, this.#renderedFilmsCount + FILMS_COUNT_PER_STEP)
+      .forEach((film) => this.#renderFilm(film));
+
+    this.#renderedFilmsCount += FILMS_COUNT_PER_STEP;
+
+    if (this.#renderedFilmsCount >= this.#films.length) {
+      remove(this.#showMoreButtonComponent);
+    }
+  };
 }
