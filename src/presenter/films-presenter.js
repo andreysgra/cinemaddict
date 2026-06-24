@@ -113,11 +113,14 @@ export default class FilmsPresenter {
   }
 
   #renderFilmsListEmpty() {
-    render(new FilmsListEmptyView(FilterType.ALL), this.#filmsComponent.element);
+    render(new FilmsListEmptyView({filterType: FilterType.ALL}), this.#filmsComponent.element);
   }
 
   #renderShowMoreButton() {
-    this.#showMoreButtonComponent = new ShowMoreButtonView({onClick: this.#showMoreButtonClickHandler});
+    this.#showMoreButtonComponent = new ShowMoreButtonView({
+      onClick: this.#showMoreButtonClickHandler
+    });
+
     render(this.#showMoreButtonComponent, this.#filmsListComponent.element);
   }
 

@@ -10,7 +10,7 @@ const createFilmsListEmptyTemplate = (filterType) => `
 export default class FilmsListEmptyView extends AbstractView {
   #filterType = null;
 
-  constructor(filterType) {
+  constructor({filterType}) {
     super();
 
     this.#filterType = filterType;
