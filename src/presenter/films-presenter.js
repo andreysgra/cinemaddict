@@ -4,11 +4,11 @@ import FilmsView from '../view/films-view';
 import FilmsListView from '../view/films-list-view';
 import FilmsListContainerView from '../view/films-list-container-view';
 import {FILMS_COUNT_PER_STEP, FilterType} from '../const';
-import FilmCardView from '../view/film-card-view';
 import ShowMoreButtonView from '../view/show-more-button-view';
 import FilmDetailsView from '../view/film-details-view';
 import {addEscapeEvent} from '../utils/common';
 import FilmsListEmptyView from '../view/films-list-empty-view';
+import FilmPresenter from './film-presenter';
 
 export default class FilmsPresenter {
   #container = null;
@@ -55,12 +55,12 @@ export default class FilmsPresenter {
   };
 
   #renderFilm(film) {
-    const filmCardComponent = new FilmCardView({
-      film,
-      onCardClick: () => this.#addFilmDetailsComponent(film)
+    const filmPresenter = new FilmPresenter({
+      container: this.#filmsListContainerComponent.element,
+      onCardClick: this.#addFilmDetailsComponent
     });
 
-    render(filmCardComponent, this.#filmsListContainerComponent.element);
+    filmPresenter.init(film);
   }
 
   #renderFilmCards(from, to) {
