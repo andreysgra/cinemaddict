@@ -5,13 +5,15 @@ import FilmsListView from '../view/films-list-view';
 import FilmsListContainerView from '../view/films-list-container-view';
 import {FILMS_COUNT_PER_STEP, FilterType} from '../const';
 import ShowMoreButtonView from '../view/show-more-button-view';
-import FilmDetailsView from '../view/film-details-view';
 import {addEscapeEvent} from '../utils/common';
 import FilmsListEmptyView from '../view/films-list-empty-view';
 import FilmPresenter from './film-presenter';
+import FilmDetailsPresenter from './film-details-presenter';
 
 export default class FilmsPresenter {
   #container = null;
+
+  #filmDetailsPresenter = null;
 
   #filmsModel = null;
   #commentsModel = null;
@@ -25,7 +27,6 @@ export default class FilmsPresenter {
   #filmsListComponent = new FilmsListView();
   #filmsListContainerComponent = new FilmsListContainerView();
   #showMoreButtonComponent = null;
-  #filmDetailsComponent = null;
 
   constructor({container, filmsModel, commentsModel}) {
     this.#container = container;
@@ -40,24 +41,23 @@ export default class FilmsPresenter {
     this.#renderFilmsBoard();
   }
 
-  #addFilmDetailsComponent = (film) => {
+  #addFilmDetails = (film) => {
     this.#renderFilmDetails(film);
 
-    document.body.classList.add('hide-overflow');
     document.addEventListener('keydown', this.#escKeyDownHandler);
   };
 
-  #removeFilmDetailsComponent = () => {
-    remove(this.#filmDetailsComponent);
+  #removeFilmDetails = () => {
+    this.#filmDetailsPresenter.destroy();
+    this.#filmDetailsPresenter = null;
 
-    document.body.classList.remove('hide-overflow');
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   };
 
   #renderFilm(film) {
     const filmPresenter = new FilmPresenter({
       container: this.#filmsListContainerComponent.element,
-      onCardClick: this.#addFilmDetailsComponent
+      onCardClick: this.#addFilmDetails
     });
 
     filmPresenter.init(film);
@@ -72,13 +72,12 @@ export default class FilmsPresenter {
   #renderFilmDetails(film) {
     const comments = [...this.#commentsModel.getComments(film)];
 
-    this.#filmDetailsComponent = new FilmDetailsView({
-      film,
-      comments,
-      onCloseButtonClick: this.#removeFilmDetailsComponent
+    this.#filmDetailsPresenter = new FilmDetailsPresenter({
+      container: this.#container.parentElement,
+      onCloseButtonClick: this.#removeFilmDetails
     });
 
-    render(this.#filmDetailsComponent, this.#container.parentElement);
+    this.#filmDetailsPresenter.init(film, comments);
   }
 
   #renderFilms() {
@@ -129,7 +128,7 @@ export default class FilmsPresenter {
   }
 
   #escKeyDownHandler = (evt) => {
-    addEscapeEvent(evt, this.#removeFilmDetailsComponent);
+    addEscapeEvent(evt, this.#removeFilmDetails);
   };
 
   #showMoreButtonClickHandler = () => {
