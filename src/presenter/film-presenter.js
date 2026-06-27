@@ -24,7 +24,10 @@ export default class FilmPresenter {
 
     this.#filmCardComponent = new FilmCardView({
       film: this.#film,
-      onCardClick: this.#cardClickHandler
+      onCardClick: this.#cardClickHandler,
+      onFavoriteButtonClick: this.#favoriteButtonClickHandler,
+      onWatchedButtonClick: this.#watchedButtonClickHandler,
+      onWatchlistButtonClick: this.#watchlistButtonClickHandler
     });
 
     render(this.#filmCardComponent, this.#container);
@@ -32,5 +35,17 @@ export default class FilmPresenter {
 
   #cardClickHandler = () => {
     this.#onCardClick(this.#film);
+  };
+
+  #favoriteButtonClickHandler = () => {
+
+  };
+
+  #watchedButtonClickHandler = () => {
+
+  };
+
+  #watchlistButtonClickHandler = () => {
+
   };
 }

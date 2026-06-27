@@ -29,7 +29,10 @@ export default class FilmDetailsPresenter {
     this.#filmDetailsComponent = new FilmDetailsView({
       film: this.#film,
       comments: this.#comments,
-      onCloseButtonClick: this.#closeButtonClickHandler
+      onCloseButtonClick: this.#closeButtonClickHandler,
+      onFavoriteButtonClick: this.#favoriteButtonClickHandler,
+      onWatchedButtonClick: this.#watchedButtonClickHandler,
+      onWatchlistButtonClick: this.#watchlistButtonClickHandler
     });
 
     render(this.#filmDetailsComponent, this.#container);
@@ -38,5 +41,17 @@ export default class FilmDetailsPresenter {
 
   #closeButtonClickHandler = () => {
     this.#onCloseButtonClickHandler();
+  };
+
+  #favoriteButtonClickHandler = () => {
+
+  };
+
+  #watchedButtonClickHandler = () => {
+
+  };
+
+  #watchlistButtonClickHandler = () => {
+
   };
 }
