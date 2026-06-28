@@ -11,6 +11,12 @@ export const FilterType = {
   FAVORITES: 'favorites',
 };
 
+export const SortType = {
+  DEFAULT: 'default',
+  DATE: 'date',
+  RATING: 'rating'
+};
+
 export const NoFilmsMessage = {
   [FilterType.ALL]: 'There are no movies in our database',
   [FilterType.WATCHLIST]: 'There are no movies to watch now',
