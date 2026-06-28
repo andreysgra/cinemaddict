@@ -5,7 +5,7 @@ import FilmsListView from '../view/films-list-view';
 import FilmsListContainerView from '../view/films-list-container-view';
 import {FILMS_COUNT_PER_STEP, FilterType} from '../const';
 import ShowMoreButtonView from '../view/show-more-button-view';
-import {addEscapeEvent} from '../utils/common';
+import {addEscapeEvent, updateItem} from '../utils/common';
 import FilmsListEmptyView from '../view/films-list-empty-view';
 import FilmPresenter from './film-presenter';
 import FilmDetailsPresenter from './film-details-presenter';
@@ -13,13 +13,14 @@ import FilmDetailsPresenter from './film-details-presenter';
 export default class FilmsPresenter {
   #container = null;
 
+  #filmPresenters = new Map();
   #filmDetailsPresenter = null;
 
   #filmsModel = null;
   #commentsModel = null;
 
   #films = [];
-
+  #selectedFilm = null;
   #renderedFilmsCount = FILMS_COUNT_PER_STEP;
 
   #sortComponent = new SortView();
@@ -42,25 +43,39 @@ export default class FilmsPresenter {
   }
 
   #addFilmDetails = (film) => {
-    this.#renderFilmDetails(film);
+    if (this.#selectedFilm && this.#selectedFilm.id === film.id) {
+      return;
+    }
 
-    document.addEventListener('keydown', this.#escKeyDownHandler);
+    this.#selectedFilm = film;
+    this.#renderFilmDetails(film);
+  };
+
+  #handleFilmChange = (updatedFilm) => {
+    this.#films = updateItem(this.#films, updatedFilm);
+    this.#filmPresenters.get(updatedFilm.id).init(updatedFilm);
+
+    if (this.#filmDetailsPresenter && this.#selectedFilm.id === updatedFilm.id) {
+      this.#selectedFilm = updatedFilm;
+      this.#renderFilmDetails(updatedFilm);
+    }
   };
 
   #removeFilmDetails = () => {
     this.#filmDetailsPresenter.destroy();
     this.#filmDetailsPresenter = null;
-
-    document.removeEventListener('keydown', this.#escKeyDownHandler);
+    this.#selectedFilm = null;
   };
 
   #renderFilm(film) {
     const filmPresenter = new FilmPresenter({
       container: this.#filmsListContainerComponent.element,
-      onCardClick: this.#addFilmDetails
+      onCardClick: this.#addFilmDetails,
+      onDataChange: this.#handleFilmChange
     });
 
     filmPresenter.init(film);
+    this.#filmPresenters.set(film.id, filmPresenter);
   }
 
   #renderFilmCards(from, to) {
@@ -72,10 +87,14 @@ export default class FilmsPresenter {
   #renderFilmDetails(film) {
     const comments = [...this.#commentsModel.getComments(film)];
 
-    this.#filmDetailsPresenter = new FilmDetailsPresenter({
-      container: this.#container.parentElement,
-      onCloseButtonClick: this.#removeFilmDetails
-    });
+    if (this.#filmDetailsPresenter === null) {
+      this.#filmDetailsPresenter = new FilmDetailsPresenter({
+        container: this.#container.parentElement,
+        onCloseButtonClick: this.#removeFilmDetails,
+        onDataChange: this.#handleFilmChange,
+        onEscKeyDown: this.#escKeyDownHandler
+      });
+    }
 
     this.#filmDetailsPresenter.init(film, comments);
   }
